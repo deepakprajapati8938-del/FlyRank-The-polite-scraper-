@@ -1,106 +1,200 @@
+import os
+import time
+import json
+import hashlib
+import logging
+from datetime import datetime, timezone
 import requests
 from bs4 import BeautifulSoup
 from pydantic import BaseModel, ValidationError
-import time
-import json
-import logging
+from typing import Optional
+from urllib.parse import urljoin
 import re
 
-# Set up logging to show we are surviving errors gracefully
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# Define Schema for Data Validation (turns messy data into clean, checked rules)
-class Book(BaseModel):
-    title: str
-    price: float
-    availability: bool
-    rating: int
+# --- CONFIGURATION ---
+BASE_URL = "https://books.toscrape.com/catalogue/page-1.html"
+HEADERS = {'User-Agent': 'PoliteStudentBot/1.0 (Learning Project; FlyRank Assignment A9; student@example.com)'}
+CACHE_DIR = "cache"
+OUTPUT_DIR = "output"
+os.makedirs(CACHE_DIR, exist_ok=True)
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# Custom polite headers (telling the server who we are, as a professional does)
-HEADERS = {
-    'User-Agent': 'PoliteStudentBot/1.0 (Learning Project; FlyRank Assignment)'
+# Analytics for run report
+run_stats = {
+    "start_time": datetime.now(timezone.utc).isoformat(),
+    "duration_seconds": 0,
+    "pages_fetched": 0,
+    "cache_hits": 0,
+    "valid_records": 0,
+    "invalid_records": 0,
+    "failed_pages": 0
 }
 
-def parse_price(price_str: str) -> float:
-    # Extracts real number from messy text like "£51.77" or "Â£51.77"
-    match = re.search(r'[\d\.]+', price_str)
-    if match:
-        return float(match.group())
-    return 0.0
+# --- STAGE 4: SCHEMA ---
+class BookRecord(BaseModel):
+    title: str
+    product_url: str
+    price_text: str
+    price_gbp: float
+    availability_text: str
+    rating_text: str
+    description: Optional[str]
+    source_page: str
+    fetched_at: str
 
-def parse_rating(class_list: list) -> int:
-    # Converts text-based star ratings into integers
-    ratings = {'One': 1, 'Two': 2, 'Three': 3, 'Four': 4, 'Five': 5}
-    for c in class_list:
-        if c in ratings:
-            return ratings[c]
-    return 0
+# --- STAGE 1: FETCH AND CACHE ---
+def get_cache_path(url: str) -> str:
+    # Use MD5 hash of the URL to create a safe filename
+    url_hash = hashlib.md5(url.encode('utf-8')).hexdigest()
+    return os.path.join(CACHE_DIR, f"{url_hash}.html")
 
-def scrape_page(url: str):
+def fetch_page(url: str) -> Optional[str]:
+    cache_path = get_cache_path(url)
+    
+    # 1. Read from cache if it exists
+    if os.path.exists(cache_path):
+        run_stats["cache_hits"] += 1
+        with open(cache_path, 'r', encoding='utf-8') as f:
+            return f.read()
+
+    # 2. Otherwise, fetch politely
     try:
+        logging.info(f"FETCHING live page: {url}")
+        time.sleep(0.5) # Minimum 500ms delay between requests
+        
         response = requests.get(url, headers=HEADERS, timeout=10)
-        # Check if the page broke or gave a bad status code (e.g., 404, 500)
+        # Raise error for 404, 500, etc.
         response.raise_for_status() 
-        return response.text
+        
+        html_content = response.text
+        
+        # Save to cache
+        with open(cache_path, 'w', encoding='utf-8') as f:
+            f.write(html_content)
+            
+        run_stats["pages_fetched"] += 1
+        return html_content
+
     except requests.exceptions.RequestException as e:
         logging.error(f"Failed to fetch {url}: {e}")
+        run_stats["failed_pages"] += 1
         return None
 
-def main():
-    # The famous free practice site
-    base_url = "http://books.toscrape.com/catalogue/page-{}.html"
-    all_valid_books = []
-    total_pages = 3  # Collecting exactly 60 books (20 per page * 3 pages)
+# --- HELPER PARSERS ---
+def parse_price(price_text: str) -> float:
+    match = re.search(r'[\d\.]+', price_text)
+    return float(match.group()) if match else 0.0
 
-    for page_num in range(1, total_pages + 1):
-        url = base_url.format(page_num)
-        logging.info(f"Scraping page {page_num}...")
+# --- MAIN SCRAPER ---
+def main():
+    start_time_obj = time.time()
+    
+    # --- STAGE 2: DISCOVER THREE CATALOGUE PAGES ---
+    discovered_urls = {}
+    current_url = BASE_URL
+    pages_scraped = 0
+    
+    while current_url and pages_scraped < 3:
+        logging.info(f"Processing catalogue page: {current_url}")
+        html = fetch_page(current_url)
+        if not html:
+            break
+            
+        soup = BeautifulSoup(html, 'html.parser')
         
-        html_content = scrape_page(url)
-        if not html_content:
-            logging.warning(f"Skipping page {page_num} due to errors. (Surviving a broken page)")
+        # Extract book links
+        articles = soup.find_all('article', class_='product_pod')
+        for article in articles:
+            relative_link = article.h3.a['href']
+            absolute_link = urljoin(current_url, relative_link)
+            # Use dictionary to guarantee uniqueness (no duplicates)
+            discovered_urls[absolute_link] = current_url
+            
+        pages_scraped += 1
+        
+        # Find next page link
+        next_button = soup.find('li', class_='next')
+        if next_button and pages_scraped < 3:
+            next_relative = next_button.a['href']
+            current_url = urljoin(current_url, next_relative)
+        else:
+            current_url = None
+
+    logging.info(f"Discovered {len(discovered_urls)} unique book URLs.")
+
+    # --- STAGE 5: DELIBERATELY BROKEN URL ---
+    # Inject a fake URL to prove we survive failures
+    discovered_urls["https://books.toscrape.com/catalogue/this-is-a-fake-book_9999/index.html"] = "fake_source"
+
+    # --- STAGE 3 & 4: EXTRACT, CLEAN, VALIDATE ---
+    good_records = []
+    bad_records = []
+
+    for book_url, source_url in discovered_urls.items():
+        html = fetch_page(book_url)
+        if not html:
+            # We log it, but continue the loop (surviving the broken page)
             continue
             
-        soup = BeautifulSoup(html_content, 'html.parser')
-        book_articles = soup.find_all('article', class_='product_pod')
+        soup = BeautifulSoup(html, 'html.parser')
+        
+        try:
+            main_product = soup.find('div', class_='product_main')
+            title = main_product.h1.text
+            price_text = main_product.find('p', class_='price_color').text
+            availability_text = main_product.find('p', class_='instock availability').text.strip()
+            
+            # Rating might be missing, parse carefully
+            rating_p = main_product.find('p', class_='star-rating')
+            rating_text = rating_p['class'][1] if rating_p else "Unknown"
+            
+            # Description is sometimes missing
+            desc_div = soup.find('div', id='product_description')
+            description = desc_div.find_next_sibling('p').text if desc_div else None
+            
+            # Assemble raw fields
+            raw_data = {
+                "title": title,
+                "product_url": book_url,
+                "price_text": price_text,
+                "price_gbp": parse_price(price_text),
+                "availability_text": availability_text,
+                "rating_text": rating_text,
+                "description": description,
+                "source_page": source_url,
+                "fetched_at": datetime.now(timezone.utc).isoformat()
+            }
+            
+            # Validate against Pydantic schema
+            validated_record = BookRecord(**raw_data)
+            good_records.append(validated_record.model_dump())
+            run_stats["valid_records"] += 1
+            
+        except ValidationError as ve:
+            logging.warning(f"Validation failed for {book_url}")
+            bad_records.append({"url": book_url, "error": str(ve)})
+            run_stats["invalid_records"] += 1
+        except Exception as e:
+            logging.error(f"Extraction error on {book_url}: {e}")
+            bad_records.append({"url": book_url, "error": str(e)})
+            run_stats["invalid_records"] += 1
 
-        for article in book_articles:
-            try:
-                title = article.h3.a['title']
-                price_text = article.find('p', class_='price_color').text
-                price = parse_price(price_text)
-                
-                # Check stock availability
-                instock_text = article.find('p', class_='instock availability').text.strip()
-                availability = "In stock" in instock_text
-                
-                # Extract rating
-                rating_p = article.find('p', class_='star-rating')
-                rating = parse_rating(rating_p.get('class', [])) if rating_p else 0
-                
-                # Validate every record against our Pydantic schema
-                book_data = {
-                    "title": title,
-                    "price": price,
-                    "availability": availability,
-                    "rating": rating
-                }
-                valid_book = Book(**book_data)
-                all_valid_books.append(valid_book.model_dump())
-                
-            except ValidationError as ve:
-                logging.error(f"Data validation failed for a book: {ve}")
-            except Exception as e:
-                logging.error(f"Unexpected error parsing a book on page {page_num}: {e}")
-                
-        # The ultimate polite rule: Go slowly. Never hammer a server.
-        time.sleep(2)
+    # --- SAVE OUTPUTS ---
+    with open(os.path.join(OUTPUT_DIR, 'books.json'), 'w', encoding='utf-8') as f:
+        json.dump(good_records, f, indent=4, ensure_ascii=False)
         
-    # Write cleanly checked data to JSON
-    with open('books.json', 'w', encoding='utf-8') as f:
-        json.dump(all_valid_books, f, indent=4, ensure_ascii=False)
+    if bad_records:
+        with open(os.path.join(OUTPUT_DIR, 'errors.json'), 'w', encoding='utf-8') as f:
+            json.dump(bad_records, f, indent=4)
+            
+    # --- STAGE 5: RUN REPORT ---
+    run_stats["duration_seconds"] = round(time.time() - start_time_obj, 2)
+    with open(os.path.join(OUTPUT_DIR, 'run-report.json'), 'w', encoding='utf-8') as f:
+        json.dump(run_stats, f, indent=4)
         
-    logging.info(f"✅ Successfully scraped, validated, and saved {len(all_valid_books)} books to books.json")
+    logging.info(f"Run complete. Valid: {len(good_records)}. Failed pages: {run_stats['failed_pages']}.")
 
 if __name__ == "__main__":
     main()
