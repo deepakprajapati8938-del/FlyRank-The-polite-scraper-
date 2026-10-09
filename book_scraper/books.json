@@ -1,0 +1,362 @@
+[
+    {
+        "title": "A Light in the Attic",
+        "price": 51.77,
+        "availability": true,
+        "rating": 3
+    },
+    {
+        "title": "Tipping the Velvet",
+        "price": 53.74,
+        "availability": true,
+        "rating": 1
+    },
+    {
+        "title": "Soumission",
+        "price": 50.1,
+        "availability": true,
+        "rating": 1
+    },
+    {
+        "title": "Sharp Objects",
+        "price": 47.82,
+        "availability": true,
+        "rating": 4
+    },
+    {
+        "title": "Sapiens: A Brief History of Humankind",
+        "price": 54.23,
+        "availability": true,
+        "rating": 5
+    },
+    {
+        "title": "The Requiem Red",
+        "price": 22.65,
+        "availability": true,
+        "rating": 1
+    },
+    {
+        "title": "The Dirty Little Secrets of Getting Your Dream Job",
+        "price": 33.34,
+        "availability": true,
+        "rating": 4
+    },
+    {
+        "title": "The Coming Woman: A Novel Based on the Life of the Infamous Feminist, Victoria Woodhull",
+        "price": 17.93,
+        "availability": true,
+        "rating": 3
+    },
+    {
+        "title": "The Boys in the Boat: Nine Americans and Their Epic Quest for Gold at the 1936 Berlin Olympics",
+        "price": 22.6,
+        "availability": true,
+        "rating": 4
+    },
+    {
+        "title": "The Black Maria",
+        "price": 52.15,
+        "availability": true,
+        "rating": 1
+    },
+    {
+        "title": "Starving Hearts (Triangular Trade Trilogy, #1)",
+        "price": 13.99,
+        "availability": true,
+        "rating": 2
+    },
+    {
+        "title": "Shakespeare's Sonnets",
+        "price": 20.66,
+        "availability": true,
+        "rating": 4
+    },
+    {
+        "title": "Set Me Free",
+        "price": 17.46,
+        "availability": true,
+        "rating": 5
+    },
+    {
+        "title": "Scott Pilgrim's Precious Little Life (Scott Pilgrim #1)",
+        "price": 52.29,
+        "availability": true,
+        "rating": 5
+    },
+    {
+        "title": "Rip it Up and Start Again",
+        "price": 35.02,
+        "availability": true,
+        "rating": 5
+    },
+    {
+        "title": "Our Band Could Be Your Life: Scenes from the American Indie Underground, 1981-1991",
+        "price": 57.25,
+        "availability": true,
+        "rating": 3
+    },
+    {
+        "title": "Olio",
+        "price": 23.88,
+        "availability": true,
+        "rating": 1
+    },
+    {
+        "title": "Mesaerion: The Best Science Fiction Stories 1800-1849",
+        "price": 37.59,
+        "availability": true,
+        "rating": 1
+    },
+    {
+        "title": "Libertarianism for Beginners",
+        "price": 51.33,
+        "availability": true,
+        "rating": 2
+    },
+    {
+        "title": "It's Only the Himalayas",
+        "price": 45.17,
+        "availability": true,
+        "rating": 2
+    },
+    {
+        "title": "In Her Wake",
+        "price": 12.84,
+        "availability": true,
+        "rating": 1
+    },
+    {
+        "title": "How Music Works",
+        "price": 37.32,
+        "availability": true,
+        "rating": 2
+    },
+    {
+        "title": "Foolproof Preserving: A Guide to Small Batch Jams, Jellies, Pickles, Condiments, and More: A Foolproof Guide to Making Small Batch Jams, Jellies, Pickles, Condiments, and More",
+        "price": 30.52,
+        "availability": true,
+        "rating": 3
+    },
+    {
+        "title": "Chase Me (Paris Nights #2)",
+        "price": 25.27,
+        "availability": true,
+        "rating": 5
+    },
+    {
+        "title": "Black Dust",
+        "price": 34.53,
+        "availability": true,
+        "rating": 5
+    },
+    {
+        "title": "Birdsong: A Story in Pictures",
+        "price": 54.64,
+        "availability": true,
+        "rating": 3
+    },
+    {
+        "title": "America's Cradle of Quarterbacks: Western Pennsylvania's Football Factory from Johnny Unitas to Joe Montana",
+        "price": 22.5,
+        "availability": true,
+        "rating": 3
+    },
+    {
+        "title": "Aladdin and His Wonderful Lamp",
+        "price": 53.13,
+        "availability": true,
+        "rating": 3
+    },
+    {
+        "title": "Worlds Elsewhere: Journeys Around Shakespeareâs Globe",
+        "price": 40.3,
+        "availability": true,
+        "rating": 5
+    },
+    {
+        "title": "Wall and Piece",
+        "price": 44.18,
+        "availability": true,
+        "rating": 4
+    },
+    {
+        "title": "The Four Agreements: A Practical Guide to Personal Freedom",
+        "price": 17.66,
+        "availability": true,
+        "rating": 5
+    },
+    {
+        "title": "The Five Love Languages: How to Express Heartfelt Commitment to Your Mate",
+        "price": 31.05,
+        "availability": true,
+        "rating": 3
+    },
+    {
+        "title": "The Elephant Tree",
+        "price": 23.82,
+        "availability": true,
+        "rating": 5
+    },
+    {
+        "title": "The Bear and the Piano",
+        "price": 36.89,
+        "availability": true,
+        "rating": 1
+    },
+    {
+        "title": "Sophie's World",
+        "price": 15.94,
+        "availability": true,
+        "rating": 5
+    },
+    {
+        "title": "Penny Maybe",
+        "price": 33.29,
+        "availability": true,
+        "rating": 3
+    },
+    {
+        "title": "Maude (1883-1993):She Grew Up with the country",
+        "price": 18.02,
+        "availability": true,
+        "rating": 2
+    },
+    {
+        "title": "In a Dark, Dark Wood",
+        "price": 19.63,
+        "availability": true,
+        "rating": 1
+    },
+    {
+        "title": "Behind Closed Doors",
+        "price": 52.22,
+        "availability": true,
+        "rating": 4
+    },
+    {
+        "title": "You can't bury them all: Poems",
+        "price": 33.63,
+        "availability": true,
+        "rating": 2
+    },
+    {
+        "title": "Slow States of Collapse: Poems",
+        "price": 57.31,
+        "availability": true,
+        "rating": 3
+    },
+    {
+        "title": "Reasons to Stay Alive",
+        "price": 26.41,
+        "availability": true,
+        "rating": 2
+    },
+    {
+        "title": "Private Paris (Private #10)",
+        "price": 47.61,
+        "availability": true,
+        "rating": 5
+    },
+    {
+        "title": "#HigherSelfie: Wake Up Your Life. Free Your Soul. Find Your Tribe.",
+        "price": 23.11,
+        "availability": true,
+        "rating": 5
+    },
+    {
+        "title": "Without Borders (Wanderlove #1)",
+        "price": 45.07,
+        "availability": true,
+        "rating": 2
+    },
+    {
+        "title": "When We Collided",
+        "price": 31.77,
+        "availability": true,
+        "rating": 1
+    },
+    {
+        "title": "We Love You, Charlie Freeman",
+        "price": 50.27,
+        "availability": true,
+        "rating": 5
+    },
+    {
+        "title": "Untitled Collection: Sabbath Poems 2014",
+        "price": 14.27,
+        "availability": true,
+        "rating": 4
+    },
+    {
+        "title": "Unseen City: The Majesty of Pigeons, the Discreet Charm of Snails & Other Wonders of the Urban Wilderness",
+        "price": 44.18,
+        "availability": true,
+        "rating": 4
+    },
+    {
+        "title": "Unicorn Tracks",
+        "price": 18.78,
+        "availability": true,
+        "rating": 3
+    },
+    {
+        "title": "Unbound: How Eight Technologies Made Us Human, Transformed Society, and Brought Our World to the Brink",
+        "price": 25.52,
+        "availability": true,
+        "rating": 1
+    },
+    {
+        "title": "Tsubasa: WoRLD CHRoNiCLE 2 (Tsubasa WoRLD CHRoNiCLE #2)",
+        "price": 16.28,
+        "availability": true,
+        "rating": 1
+    },
+    {
+        "title": "Throwing Rocks at the Google Bus: How Growth Became the Enemy of Prosperity",
+        "price": 31.12,
+        "availability": true,
+        "rating": 3
+    },
+    {
+        "title": "This One Summer",
+        "price": 19.49,
+        "availability": true,
+        "rating": 4
+    },
+    {
+        "title": "Thirst",
+        "price": 17.27,
+        "availability": true,
+        "rating": 5
+    },
+    {
+        "title": "The Torch Is Passed: A Harding Family Story",
+        "price": 19.09,
+        "availability": true,
+        "rating": 1
+    },
+    {
+        "title": "The Secret of Dreadwillow Carse",
+        "price": 56.13,
+        "availability": true,
+        "rating": 1
+    },
+    {
+        "title": "The Pioneer Woman Cooks: Dinnertime: Comfort Classics, Freezer Food, 16-Minute Meals, and Other Delicious Ways to Solve Supper!",
+        "price": 56.41,
+        "availability": true,
+        "rating": 1
+    },
+    {
+        "title": "The Past Never Ends",
+        "price": 56.5,
+        "availability": true,
+        "rating": 4
+    },
+    {
+        "title": "The Natural History of Us (The Fine Art of Pretending #2)",
+        "price": 45.22,
+        "availability": true,
+        "rating": 3
+    }
+]
